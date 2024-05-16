@@ -12,6 +12,9 @@ This Python file is used to read GM-SYS legacy model files:
 5. The `grv` file contains the gravity data used to make the model.
 6. The `mag` file contains magnetic observation data.
 
+# Warning
+⚠️ The `ecs` file reader is optimised for New Zealand use (it reads [NZTM](https://epsg.io/2193) and [NZMG](https://epsg.io/27200) coordinate systems). You may want to tweak the `gmsys_reader.py` to suit your local coordinate system.
+
 # How to Use
 Download the `gmsys_reader.py` into a folder containing the legacy GM-SYS files, and import it onto your project by typing `from gmsys_reader import *`. BLK and SUR files will be returned as a Pandas DataFrame, while the other files will be read as a mix of NumPy array and Pandas DataFrame. Please see `sample_rangitoto_plot.ipynb` for example.
 
