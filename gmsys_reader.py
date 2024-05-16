@@ -7,6 +7,9 @@ from matplotlib.patches import Polygon
 from pyproj import Proj, Transformer
 from scipy.optimize import minimize
 
+# Reference
+# GM-SYS User's Guide v4.9 at https://docplayer.net/19843267-Gm-sys-user-s-guide-version-4-9.html
+
 # Remove number from list
 def remove_numbers_from_list(input_list):
     """Remove numbers from a list of strings."""
