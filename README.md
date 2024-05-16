@@ -17,3 +17,6 @@ Download the `gmsys_reader.py` into a folder containing the legacy GM-SYS files,
 
 # About the Model Used Here
 The model used in the example comes from [Fig. 5C](https://www.sciencedirect.com/science/article/pii/S0377027323000811#f0025) of my publication [Luthfian et al. (2023)](https://www.sciencedirect.com/science/article/pii/S0377027323000811). The article and figures are licensed under [CC BY 4.0 DEED](https://creativecommons.org/licenses/by/4.0/) Creative Commons license. You are free to share, copy, redistribute, adapt, and build upon the material for any commercial or non-commercial purpose, with **attribution** and **no additional restrictions** applicable.
+
+# Reference
+* [GM-SYS User's Guide Version 4.9](https://docplayer.net/19843267-Gm-sys-user-s-guide-version-4-9.html)
