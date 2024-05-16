@@ -1,7 +1,7 @@
 # gmsys_reader
 A legacy GM-SYS 2D model file reader coded in Python
 
-![Rangitoto 2.5D model originally created in GM-SYS.](https://github.com/aluthfian/gmsys_reader/blob/main/example_rangitoto_luthfian23.png|height=300)
+![Rangitoto 2.5D model originally created in GM-SYS.](https://github.com/aluthfian/gmsys_reader/blob/main/example_rangitoto_luthfian23.png | height=300)
 
 # Aim
 This Python file is used to read GM-SYS legacy model files:
