@@ -1,6 +1,8 @@
 # gmsys_reader
 A legacy GM-SYS 2D model file reader coded in Python
 
+![[example_rangitoto_luthfian23.png]]
+
 # Aim
 This Python file is used to read GM-SYS legacy model files:
 1. The `sur` file contains model bodies' geometries.
