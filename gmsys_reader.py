@@ -255,10 +255,6 @@ def well_file_reader(filename):
                 pass
     return WellData
 
-# Objective function to be used in case of "Auto" DC shift
-def objective_function(c):
-    return np.sum((B - (A + c))**2)
-
 # reading Gravity Data file
 def grav_file_reader(filename):
     offset_status =''
@@ -285,6 +281,8 @@ def grav_file_reader(filename):
             # Initial guess for the offset
             init_offset_val = 0.0
             # Perform optimization
+            data_values = pd.read_csv(filename, delimiter='\s+', skiprows=2).to_numpy()
+            objective_function= lambda x: np.sum((data_values[:,-2] - (data_values[:,-3] + x))**2)
             optimising_offset = minimize(objective_function, init_offset_val)
             # Get the optimized offset value
             offset_val = optimising_offset.x[0]
@@ -333,6 +331,8 @@ def mag_file_reader(filename):
             # Initial guess for the offset
             init_offset_val = 0.0
             # Perform optimization
+            data_values = pd.read_csv(filename, delimiter='\s+', skiprows=3).to_numpy()
+            objective_function= lambda x: np.sum((data_values[:,-2] - (data_values[:,-3] + x))**2)
             optimising_offset = minimize(objective_function, init_offset_val)
             # Get the optimized offset value
             offset_val = optimising_offset.x[0]
