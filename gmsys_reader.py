@@ -298,7 +298,10 @@ def grav_file_reader(filename):
             values_inplace[2] = -1*values_inplace[2]
             # Gravity data position moved from (-3:-2) to (-2:-1)
             if (offset_status == 'manual')|(offset_status == 'automatic'):
-                values_inplace[-1] = round(values_inplace[-1] - offset_val,5)
+                if offset_val>=0:
+                    values_inplace[-1] = round(values_inplace[-1]-offset_val,5)
+                else:
+                    values_inplace[-1] = round(offset_val+values_inplace[-1],5)
             elif offset_status == 'by station':
                 #data@sta - (model@sta - model@pts)
                 values_inplace[-1] = round(obsGrav_at_sta - (modGrav_at_sta - values_inplace[-1]),5)
@@ -353,7 +356,10 @@ def mag_file_reader(filename):
             values_inplace[2] = -1*values_inplace[2]
             # Gravity data position moved from (-3:-2) to (-2:-1)
             if (offset_status == 'manual')|(offset_status == 'automatic'):
-                values_inplace[-1] = round(values_inplace[-1]-offset_val,5)
+                if offset_val>=0:
+                    values_inplace[-1] = round(values_inplace[-1]-offset_val,5)
+                else:
+                    values_inplace[-1] = round(offset_val+values_inplace[-1],5)
             elif offset_status == 'by station':
                 values_inplace[-1] = round(obsMag_at_sta - (modMag_at_sta - values_inplace[-1]),5)
             MagData.loc[idx] = values_inplace
