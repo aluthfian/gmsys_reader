@@ -79,30 +79,32 @@ def parse_sur_file(filename):
         # Filter dictionary
         filtered_dict = {key: value for key, value in polygon_raw_dict.items() if key.split('-')[1] == str(units)}
         
-        key_now = list(filtered_dict.keys())[0]
+        key_list = list(filtered_dict.keys())
+        key_now = key_list[0]
         key_used = [key_now]
         polygon_array = np.array(filtered_dict[key_now])
         for idx_a in range(1, len(filtered_dict.keys())):
-            for idx_b in range(1, len(filtered_dict.keys())):
-                key_now = list(filtered_dict.keys())[idx_b]
+            keys_unUsed = [key for key in key_list if key not in key_used]
+            for idx_b in range(len(keys_unUsed)):
+                key_now = keys_unUsed[idx_b]
                 dummy_array = np.array(filtered_dict[key_now])
                 similar_endend = np.all(polygon_array[-1] == dummy_array[-1])
                 similar_startend = np.all(polygon_array[0] == dummy_array[-1])
                 similar_endstart = np.all(polygon_array[-1] == dummy_array[0])
                 similar_startstart = np.all(polygon_array[0] == dummy_array[0])
-                if similar_endstart & (key_now not in key_used):
+                if similar_endstart:
                     key_used.append(key_now)
                     polygon_array = np.vstack((polygon_array, dummy_array[1:]))
                     break
-                if similar_startend & (key_now not in key_used):
+                if similar_startend:
                     key_used.append(key_now)
                     polygon_array = np.vstack((dummy_array, polygon_array[1:]))
                     break
-                if similar_startstart & (key_now not in key_used):
+                if similar_startstart:
                     key_used.append(key_now)
                     polygon_array = np.vstack((np.flipud(dummy_array[1:]), polygon_array))
                     break
-                if similar_endend & (key_now not in key_used):
+                if similar_endend:
                     key_used.append(key_now)
                     polygon_array = np.vstack((polygon_array, np.flipud(dummy_array)[1:]))
                     break
