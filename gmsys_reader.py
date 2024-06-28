@@ -43,144 +43,76 @@ def parse_blk_file(filename):
 
 # Function to parse SUR file and extract data for all specific layer
 def parse_sur_file(filename):
-    data = []
-    polygon_dict={}
-    polygon_dummy={}
+    polygon_raw_dict={}
+    polygon_ripe_dict={}
     how_much_pts=0
     how_much_skip=0
     index_unit=[]
     with open(filename, 'r') as file:
         lines = file.readlines()
         for i in range(2,len(lines)):
-            if (i!=0)&(i<how_much_skip+1):
-                continue
-            else:
+            if (i==2)|(i==how_much_skip):
                 xy_vertex_now = []
-                sfc_index = int(lines[i])
-                index_unit_left_block = lines[i+1].split()[0]
-                index_unit_right_block = lines[i+1].split()[1]
+                block_num = int(lines[i].strip())
+                index_unit_left_block = int(lines[i+1].split()[0])
+                index_unit_right_block = int(lines[i+1].split()[1])
                 index_unit.append(index_unit_left_block)
                 index_unit.append(index_unit_right_block)
+                polygon_dict_leftLabel = f"{block_num}-{index_unit_left_block}"
+                polygon_dict_rightLabel = f"{block_num}-{index_unit_right_block}"
                 how_much_pts = int(lines[i+4].strip())
-                how_much_skip = i+4+how_much_pts
+                how_much_skip = i+5+how_much_pts
                 #x,z coordinate
                 for k in range(how_much_pts):
                     xy_vertex_now.append([float(coord) for coord in lines[i+5+k].split()])
                 xy_vertex_now = 1e+3*np.array(xy_vertex_now)
                 xy_vertex_now[:,1] = -1*xy_vertex_now[:,1]
-                xy_vertex_flip = np.flipud(xy_vertex_now).copy()
-                try:
-                    vstack1=[]
-                    vstack_dummy=[]
-                    topbottom = np.linalg.norm(xy_vertex_now[0] - polygon_dict[index_unit_left_block][-1])
-                    toptop = np.linalg.norm(xy_vertex_now[0] - polygon_dict[index_unit_left_block][0])
-                    bottomtop = np.linalg.norm(xy_vertex_now[-1] - polygon_dict[index_unit_left_block][0])
-                    bottombottom =np.linalg.norm(xy_vertex_now[-1] - polygon_dict[index_unit_left_block][-1])
-                    min_value = np.array([topbottom, toptop, bottomtop, bottombottom]).min()
-                    if min_value != 0:
-                        try:
-                            topbottom_dummy = np.linalg.norm(xy_vertex_now[0] - polygon_dummy[index_unit_left_block][-1])
-                            toptop_dummy = np.linalg.norm(xy_vertex_now[0] - polygon_dummy[index_unit_left_block][0])
-                            bottomtop_dummy = np.linalg.norm(xy_vertex_now[-1] - polygon_dummy[index_unit_left_block][0])
-                            bottombottom_dummy =np.linalg.norm(xy_vertex_now[-1] - polygon_dummy[index_unit_left_block][-1])
-                            min_value_dummy = np.array([topbottom_dummy, toptop_dummy, bottomtop_dummy, bottombottom_dummy]).min()
-                            if min_value_dummy == topbottom_dummy:
-                                vstack_dummy = np.vstack([polygon_dummy[index_unit_left_block],xy_vertex_now])
-                            elif min_value_dummy == toptop_dummy:
-                                vstack_dummy = np.vstack([xy_vertex_flip,polygon_dummy[index_unit_left_block]])
-                            elif min_value_dummy == bottomtop_dummy:
-                                vstack_dummy = np.vstack([xy_vertex_now,polygon_dummy[index_unit_left_block]])
-                            elif min_value_dummy == bottombottom_dummy:
-                                vstack_dummy = np.vstack([polygon_dummy[index_unit_left_block],xy_vertex_flip])
-                            if np.all(np.in1d(polygon_dummy[index_unit_left_block], vstack1)):
-                                pass
-                            polygon_dummy[index_unit_left_block]=vstack_dummy
-                        except:
-                            polygon_dummy[index_unit_left_block]=xy_vertex_now
-                    else:
-                        if min_value == topbottom:
-                            vstack1 = np.vstack([polygon_dict[index_unit_left_block],xy_vertex_now])
-                        elif min_value == toptop:
-                            vstack1 = np.vstack([xy_vertex_flip,polygon_dict[index_unit_left_block]])
-                        elif min_value == bottomtop:
-                            vstack1 = np.vstack([xy_vertex_now,polygon_dict[index_unit_left_block]])
-                        elif min_value == bottombottom:
-                            vstack1 = np.vstack([polygon_dict[index_unit_left_block],xy_vertex_flip])
-                        if np.all(np.in1d(polygon_dict[index_unit_left_block], vstack1)):
-                            pass
-                        polygon_dict[index_unit_left_block]=vstack1
-                except:
-                    polygon_dict[index_unit_left_block]=xy_vertex_now
-                    
-                try:
-                    vstack2=[]
-                    vstack2_dummy=[]
-                    topbottom = np.linalg.norm(xy_vertex_flip[0] - polygon_dict[index_unit_right_block][-1])
-                    toptop = np.linalg.norm(xy_vertex_flip[0] - polygon_dict[index_unit_right_block][0])
-                    bottomtop = np.linalg.norm(xy_vertex_flip[-1] - polygon_dict[index_unit_right_block][0])
-                    bottombottom =np.linalg.norm(xy_vertex_flip[-1] - polygon_dict[index_unit_right_block][-1])
-                    min_value = np.array([topbottom, toptop, bottomtop, bottombottom]).min()
-                    if min_value != 0:
-                        try:
-                            topbottom_dummy = np.linalg.norm(xy_vertex_flip[0] - polygon_dummy[index_unit_right_block][-1])
-                            toptop_dummy = np.linalg.norm(xy_vertex_flip[0] - polygon_dummy[index_unit_right_block][0])
-                            bottomtop_dummy = np.linalg.norm(xy_vertex_flip[-1] - polygon_dummy[index_unit_right_block][0])
-                            bottombottom_dummy =np.linalg.norm(xy_vertex_flip[-1] - polygon_dummy[index_unit_right_block][-1])
-                            min_value_dummy = np.array([topbottom_dummy, toptop_dummy, bottomtop_dummy, bottombottom_dummy]).min()
-                            if min_value_dummy == topbottom_dummy:
-                                vstack2_dummy = np.vstack([polygon_dummy[index_unit_right_block],xy_vertex_flip])
-                            elif min_value_dummy == toptop_dummy:
-                                vstack2_dummy = np.vstack([xy_vertex_now,polygon_dummy[index_unit_right_block]])
-                            elif min_value_dummy == bottomtop_dummy:
-                                vstack2_dummy = np.vstack([xy_vertex_flip,polygon_dummy[index_unit_right_block]])
-                            elif min_value_dummy == bottombottom_dummy:
-                                vstack2_dummy = np.vstack([polygon_dummy[index_unit_right_block],xy_vertex_now])
-                            if np.all(np.in1d(polygon_dummy[index_unit_right_block], vstack1)):
-                                pass
-                            polygon_dummy[index_unit_right_block]=vstack2_dummy
-                        except:
-                            polygon_dummy[index_unit_right_block]=xy_vertex_flip
-                    else:
-                        if min_value == topbottom:
-                            vstack2 = np.vstack([polygon_dict[index_unit_right_block],xy_vertex_flip])
-                        elif min_value == toptop:
-                            vstack2 = np.vstack([xy_vertex_now,polygon_dict[index_unit_right_block]])
-                        elif min_value == bottomtop:
-                            vstack2 = np.vstack([xy_vertex_flip,polygon_dict[index_unit_right_block]])
-                        elif min_value == bottombottom:
-                            vstack2 = np.vstack([polygon_dict[index_unit_right_block],xy_vertex_now])
-                        if np.all(np.in1d(polygon_dict[index_unit_right_block], vstack2)):
-                            pass
-                        polygon_dict[index_unit_right_block]=vstack2
-                except:
-                    polygon_dict[index_unit_right_block]=xy_vertex_flip
-   
-    index_unit = np.unique(index_unit)
-    for units in polygon_dummy.keys():
-        vstack_v3 = []
-        current_xy = polygon_dict[units]
-        dummy_xy = polygon_dummy[units]
-        dummy_xy_reverse = np.flipud(dummy_xy)
-        topbottom_v3 = np.linalg.norm(current_xy[0] - dummy_xy[-1])
-        toptop_v3 = np.linalg.norm(current_xy[0] - dummy_xy[0])
-        bottomtop_v3 = np.linalg.norm(current_xy[-1] - dummy_xy[0])
-        bottombottom_v3 =np.linalg.norm(current_xy[-1] - dummy_xy[-1])
-        min_value_v3 = np.array([topbottom_v3, toptop_v3, bottomtop_v3, bottombottom_v3]).min()
-        if min_value_v3 == topbottom_v3:
-            vstack_v3 = np.vstack([dummy_xy, current_xy])
-        elif min_value_v3 == toptop_v3:
-            vstack_v3 = np.vstack([dummy_xy_reverse, current_xy])
-        elif min_value_v3 == bottomtop_v3:
-            vstack_v3 = np.vstack([current_xy, dummy_xy])
-        elif min_value_v3 == bottombottom_v3:
-            vstack_v3 = np.vstack([current_xy, dummy_xy_reverse])
-        polygon_dict[units] = vstack_v3
+                polygon_raw_dict[polygon_dict_leftLabel] = xy_vertex_now
+                polygon_raw_dict[polygon_dict_rightLabel] = xy_vertex_now
+            elif (i<how_much_skip):
+                continue
     
+    index_unit = np.unique(index_unit)
+    index_unit.sort()
+    
+    for units in index_unit:
+        # Filter dictionary
+        filtered_dict = {key: value for key, value in polygon_raw_dict.items() if key.split('-')[1] == str(units)}
+        
+        key_now = list(filtered_dict.keys())[0]
+        key_used = [key_now]
+        polygon_array = np.array(filtered_dict[key_now])
+        for idx_a in range(1, len(filtered_dict.keys())):
+            for idx_b in range(1, len(filtered_dict.keys())):
+                key_now = list(filtered_dict.keys())[idx_b]
+                dummy_array = np.array(filtered_dict[key_now])
+                similar_endend = np.all(polygon_array[-1] == dummy_array[-1])
+                similar_startend = np.all(polygon_array[0] == dummy_array[-1])
+                similar_endstart = np.all(polygon_array[-1] == dummy_array[0])
+                similar_startstart = np.all(polygon_array[0] == dummy_array[0])
+                if similar_endstart & (key_now not in key_used):
+                    key_used.append(key_now)
+                    polygon_array = np.vstack((polygon_array, dummy_array[1:]))
+                    break
+                if similar_startend & (key_now not in key_used):
+                    key_used.append(key_now)
+                    polygon_array = np.vstack((dummy_array, polygon_array[1:]))
+                    break
+                if similar_startstart & (key_now not in key_used):
+                    key_used.append(key_now)
+                    polygon_array = np.vstack((np.flipud(dummy_array[1:]), polygon_array))
+                    break
+                if similar_endend & (key_now not in key_used):
+                    key_used.append(key_now)
+                    polygon_array = np.vstack((polygon_array, np.flipud(dummy_array)[1:]))
+                    break
+    
+        polygon_ripe_dict[units] = polygon_array
     
     model_geom = pd.DataFrame(index=[int(unit) for unit in index_unit], columns=['Geometry (Xm,Ym)'])
     model_geom.index.name='Body index'
     for units in index_unit:
-        model_geom.at[int(units), 'Geometry (Xm,Ym)']=[vertex.tolist() for vertex in polygon_dict[str(units)]]
+        model_geom.at[int(units), 'Geometry (Xm,Ym)']=[vertex.tolist() for vertex in polygon_ripe_dict[units]]
     return model_geom
 
 # Function to parse the coordinate system of the model
