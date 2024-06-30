@@ -178,7 +178,6 @@ def well_file_reader(filename):
                     WellData.loc[idx_now,'Well name']=file_lines[line-2]
                     WellData.loc[idx_now,'Profile X (m)'] = round(1e+3*float(file_lines[line-1].split()[0]),2)
                     WellData.loc[idx_now,'Distance to Profile (m)'] = round(-1e+3*to_float[1],2)
-                    #WellData.loc[idx_now,'Profile X (m)']=round(np.sign(x_dist)*np.sqrt(x_dist**2 + y_dist**2),2)
                     well_z0 = round(-1e+3*to_float[0],2)
                     WellData.loc[idx_now,'Elevation (m)']=well_z0
                     num_of_unit = int(file_lines[line+1])
