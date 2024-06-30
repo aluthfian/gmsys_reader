@@ -165,7 +165,7 @@ def parse_ecs_file(filename):
 
 # Function to parse the Well file
 def well_file_reader(filename):
-    WellData = pd.DataFrame(columns=['Well name','Profile X (m)','Elevation (m)','Units','Depths (m)'])
+    WellData = pd.DataFrame(columns=['Well name','Profile X (m)','Distance to Profile (m)','Elevation (m)','Units','Depths (m)'])
     with open(filename, 'r') as file:
         file_lines = file.readlines()
         file_lines = [everyline.replace('\n','') for everyline in file_lines]
@@ -176,9 +176,9 @@ def well_file_reader(filename):
                 to_float = [float(numbers) for numbers in split_line]
                 if len(to_float) ==2:
                     WellData.loc[idx_now,'Well name']=file_lines[line-2]
-                    x_dist = round(1e+3*float(file_lines[line-1].split()[0]),2)
-                    y_dist = round(-1e+3*to_float[1],2)
-                    WellData.loc[idx_now,'Profile X (m)']=round(np.sign(x_dist)*np.sqrt(x_dist**2 + y_dist**2),2)
+                    WellData.loc[idx_now,'Profile X (m)'] = round(1e+3*float(file_lines[line-1].split()[0]),2)
+                    WellData.loc[idx_now,'Distance to Profile (m)'] = round(-1e+3*to_float[1],2)
+                    #WellData.loc[idx_now,'Profile X (m)']=round(np.sign(x_dist)*np.sqrt(x_dist**2 + y_dist**2),2)
                     well_z0 = round(-1e+3*to_float[0],2)
                     WellData.loc[idx_now,'Elevation (m)']=well_z0
                     num_of_unit = int(file_lines[line+1])
